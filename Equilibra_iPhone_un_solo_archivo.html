@@ -1,0 +1,62 @@
+<!doctype html><html lang="es"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Equilibra"><meta name="theme-color" content="#397d68">
+
+<title>Equilibra</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#eef1ee;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#132033}
+.app{max-width:460px;min-height:100vh;margin:auto;background:#f7f8f7;padding:env(safe-area-inset-top) 16px calc(82px + env(safe-area-inset-bottom))}
+header{display:flex;justify-content:space-between;align-items:center;padding:16px 2px}.brand{display:flex;gap:10px;align-items:center}.logo{width:42px;height:42px;border-radius:50%;background:#397d68;color:#fff;display:grid;place-items:center;font-weight:800;font-size:21px}.brand h1{margin:0;font-size:24px}.muted{color:#6c7785;font-size:13px}.gear{border:0;background:none;font-size:21px}
+.page{display:none}.page.active{display:block}h2{font-size:23px;margin:6px 0 14px}h3{font-size:17px;margin:0 0 12px}.card{background:#fff;border-radius:20px;padding:17px;margin-bottom:13px;box-shadow:0 2px 10px #00000008}.hero{background:#e1f1e8}.big{font-size:38px;font-weight:800;margin:3px 0 12px}.bar{height:9px;background:#d6dfda;border-radius:9px;overflow:hidden}.bar i{display:block;height:100%;background:#397d68;width:50%}.stats{display:grid;grid-template-columns:repeat(3,1fr);text-align:center;margin-top:15px}.stats strong{display:block;font-size:17px}.stats span{font-size:12px;color:#6c7785}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.action{border:0;border-radius:17px;padding:15px;text-align:left;color:white;font-weight:700}.g{background:#397d68}.b{background:#3777c8}.row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #e8ece9}.row:last-child{border-bottom:0}.cat{display:flex;align-items:center;gap:10px}.ico{width:35px;height:35px;border-radius:11px;background:#f0f3f1;display:grid;place-items:center}.red{color:#c83f3f}.green{color:#397d68}
+input,select{width:100%;padding:13px;border:1px solid #dfe4e1;border-radius:12px;background:#fff;font-size:16px;margin:5px 0 12px}label{font-size:13px;color:#6c7785}.primary,.secondary{width:100%;border:0;border-radius:13px;padding:14px;font-weight:700}.primary{background:#397d68;color:#fff}.secondary{background:#eef2ef;margin-top:8px}.goalbar{height:8px;background:#e0e6e2;border-radius:8px;overflow:hidden;margin-top:8px}.goalbar i{display:block;height:100%;background:#397d68}.task{display:flex;gap:10px;align-items:center;padding:10px 0}.task input{width:20px;margin:0}.empty{text-align:center;color:#7a8490;padding:18px}
+nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(460px,100%);background:#fff;border-top:1px solid #e2e7e4;display:grid;grid-template-columns:repeat(5,1fr);padding:8px 4px calc(8px + env(safe-area-inset-bottom));z-index:5}nav button{border:0;background:none;color:#697482;font-size:11px}nav button.active{color:#397d68;font-weight:700}nav b{font-size:20px;display:block;line-height:21px}
+.modal{display:none;position:fixed;inset:0;background:#0008;z-index:10;align-items:flex-end}.sheet{background:#fff;width:min(460px,100%);margin:auto;border-radius:24px 24px 0 0;padding:20px}
+</style></head><body><div class="app">
+<header><div class="brand"><div class="logo">↗</div><div><h1>Equilibra</h1><div class="muted">Tu vida, en equilibrio</div></div></div><button class="gear" onclick="clearData()">⚙️</button></header>
+
+<section id="home" class="page active"><div class="card"><div class="muted" id="date"></div><h2>Tu resumen</h2><div class="muted">Dinero, tiempo y objetivos en un solo sitio.</div></div>
+<div class="card hero"><div class="muted">Disponible</div><div class="big" id="hbal">0 €</div><div class="bar"><i id="hbar"></i></div><div class="stats"><div><strong id="hin">0 €</strong><span>Ingresos</span></div><div><strong id="hex">0 €</strong><span>Gastos</span></div><div><strong id="hsave">0 €</strong><span>Restante</span></div></div></div>
+<div class="grid"><button class="action g" onclick="openMoney('expense')">＋ Gasto<br><small>Registrar ahora</small></button><button class="action b" onclick="openMoney('income')">＋ Ingreso<br><small>Registrar ahora</small></button></div>
+<div class="card"><h3>Esta semana</h3><div class="row"><span>Gastos registrados</span><strong id="week">0 €</strong></div><div class="row"><span>Tareas pendientes</span><strong id="pending">0</strong></div><div class="row"><span>Objetivo principal</span><strong id="homegoal">—</strong></div></div></section>
+
+<section id="economy" class="page"><h2>Economía</h2><div class="card hero"><div class="muted">Balance del mes</div><div class="big" id="bal">0 €</div><div class="stats"><div><strong id="inc">0 €</strong><span>Ingresos</span></div><div><strong id="exp">0 €</strong><span>Gastos</span></div><div><strong id="avail">0 €</strong><span>Disponible</span></div></div></div>
+<div class="grid"><button class="action g" onclick="openMoney('expense')">＋ Gasto</button><button class="action b" onclick="openMoney('income')">＋ Ingreso</button></div>
+<div class="card"><h3>Gastos por categoría</h3><div id="cats"></div></div><div class="card"><h3>Movimientos</h3><div id="moves"></div></div></section>
+
+<section id="time" class="page"><h2>Tiempo</h2><div class="card"><div class="muted">Plan semanal inicial</div><h2 style="margin-bottom:4px">Organiza lo importante</h2><div class="row"><span>Obligaciones</span><strong>Prioridad 1</strong></div><div class="row"><span>Familia</span><strong>Prioridad 1</strong></div><div class="row"><span>Proyectos</span><strong>Prioridad 2</strong></div><div class="row"><span>Tiempo personal</span><strong>Prioridad 3</strong></div></div>
+<div class="card"><h3>Tareas</h3><div id="tasks"></div><button class="secondary" onclick="addTask()">＋ Añadir tarea</button></div></section>
+
+<section id="goals" class="page"><h2>Objetivos</h2><div id="goals"></div><div class="card"><h3>Crear objetivo</h3><input id="gn" placeholder="Ej. Ahorrar para la camper"><input id="gt" type="number" placeholder="Cantidad objetivo (€)"><button class="primary" onclick="addGoal()">Crear objetivo</button></div></section>
+
+<section id="assistant" class="page"><h2>Asistente</h2><div class="card" style="background:#edf4ff"><div id="answer">Puedo ayudarte a entender tu situación económica y organizar tus prioridades.</div></div><div class="grid"><button class="secondary" onclick="answer('economy')">¿Cómo voy?</button><button class="secondary" onclick="answer('save')">¿Cuánto ahorro?</button></div><div class="card" style="margin-top:13px"><h3>Acción rápida</h3><input id="quick" placeholder="He gastado 25 € en gasolina"><button class="primary" onclick="quick()">Registrar</button></div></section>
+</div>
+
+<nav><button data-p="home" onclick="go('home')"><b>⌂</b>Inicio</button><button data-p="economy" onclick="go('economy')"><b>€</b>Economía</button><button data-p="time" onclick="go('time')"><b>□</b>Tiempo</button><button data-p="goals" onclick="go('goals')"><b>◎</b>Objetivos</button><button data-p="assistant" onclick="go('assistant')"><b>✦</b>Asistente</button></nav>
+<div id="modal" class="modal"><div class="sheet"><h2 id="mt">Añadir gasto</h2><label>Cantidad (€)</label><input id="ma" type="number" step=".01" min="0"><label>Categoría</label><select id="mc"><option>Casa</option><option>Comida</option><option>Coche</option><option>Familia</option><option>Ocio</option><option>Proyectos</option><option>Otros</option></select><label>Descripción</label><input id="md" placeholder="Ej. gasolina"><button class="primary" onclick="saveMoney()">Guardar</button><button class="secondary" onclick="closeMoney()">Cancelar</button></div></div>
+<script>
+const KEY='equilibra_real_v1';let d=JSON.parse(localStorage.getItem(KEY)||'{"income":0,"moves":[],"goals":[],"tasks":[]}'),type='expense';
+const €=n=>new Intl.NumberFormat('es-ES',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(n);
+const persist=()=>localStorage.setItem(KEY,JSON.stringify(d));
+function go(id){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('active',x.dataset.p===id));render()}
+function render(){let ex=d.moves.filter(x=>x.type==='expense').reduce((a,x)=>a+x.amount,0),bal=d.income-ex;
+date.textContent=new Date().toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long'});
+hbal.textContent=€(bal);hin.textContent=€(d.income);hex.textContent=€(ex);hsave.textContent=€(bal);hbar.style.width=(d.income?Math.max(3,Math.min(100,bal/d.income*100)):3)+'%';balEl('bal',bal);balEl('inc',d.income);balEl('exp',ex);balEl('avail',bal);week.textContent=€(ex);pending.textContent=d.tasks.filter(x=>!x.done).length;homegoal.textContent=d.goals[0]?.name||'—';
+let c={Casa:0,Comida:0,Coche:0,Familia:0,Ocio:0,Proyectos:0,Otros:0};d.moves.forEach(x=>{if(x.type==='expense')c[x.cat]=(c[x.cat]||0)+x.amount});cats.innerHTML=Object.entries(c).map(([k,v])=>`<div class="row"><span>${k}</span><strong>${€(v)}</strong></div>`).join('');
+moves.innerHTML=d.moves.length?d.moves.slice().reverse().map(x=>`<div class="row"><div><strong>${x.desc}</strong><br><span class="muted">${x.cat} · ${x.date}</span></div><strong class="${x.type==='expense'?'red':'green'}">${x.type==='expense'?'-':'+'}${€(x.amount)}</strong></div>`).join(''):'<div class="empty">Todavía no hay movimientos.</div>';
+tasks.innerHTML=d.tasks.length?d.tasks.map((x,i)=>`<div class="task"><input type="checkbox" ${x.done?'checked':''} onchange="toggleTask(${i})"><span>${x.name}</span></div>`).join(''):'<div class="empty">Añade una tarea.</div>';
+goals.innerHTML=d.goals.length?d.goals.map(x=>`<div class="card"><strong>🎯 ${x.name}</strong><div class="muted">${€(x.saved)} de ${€(x.target)}</div><div class="goalbar"><i style="width:${x.target?Math.min(100,x.saved/x.target*100):0}%"></i></div></div>`).join(''):'<div class="card empty">Crea tu primer objetivo.</div>';persist()}
+function balEl(id,v){document.getElementById(id).textContent=€(v)}
+function openMoney(t){type=t;modal.style.display='flex';mt.textContent=t==='expense'?'Añadir gasto':'Añadir ingreso'}
+function closeMoney(){modal.style.display='none';ma.value='';md.value=''}
+function saveMoney(){let a=+ma.value;if(!a)return;d.moves.push({type,amount:a,cat:type==='income'?'Ingreso':mc.value,desc:md.value|| (type==='income'?'Ingreso':'Gasto'),date:new Date().toLocaleDateString('es-ES')});if(type==='income')d.income+=a;closeMoney();render()}
+function addTask(){let x=prompt('Tarea');if(x){d.tasks.push({name:x,done:false});render()}}
+function toggleTask(i){d.tasks[i].done=!d.tasks[i].done;render()}
+function addGoal(){let n=gn.value.trim(),t=+gt.value;if(!n||!t)return;d.goals.push({name:n,target:t,saved:0});gn.value='';gt.value='';render()}
+function answer(t){let ex=d.moves.filter(x=>x.type==='expense').reduce((a,x)=>a+x.amount,0),bal=d.income-ex;answerBox=t==='economy'?`Ingresos registrados: ${€(d.income)}. Gastos: ${€(ex)}. Disponible: ${€(bal)}.`:`A día de hoy tu ahorro registrado es ${€(bal)}. Cuando introduzcamos tus gastos fijos podremos calcular tu ahorro real mensual.`}
+function quick(){let s=quickInput.value,m=s.match(/(\d+(?:[.,]\d+)?)\s*€/);if(m){d.moves.push({type:'expense',amount:+m[1].replace(',','.'),cat:'Otros',desc:s,date:new Date().toLocaleDateString('es-ES')});quickInput.value='';render();go('economy')}else answerBox='No he encontrado una cantidad en el texto.'}
+function answerBox(v){document.getElementById('answer').textContent=v}
+function clearData(){if(confirm('¿Borrar los datos de Equilibra en este teléfono?')){localStorage.removeItem(KEY);location.reload()}}
+render();
+</script></body></html>
